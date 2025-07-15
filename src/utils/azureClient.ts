@@ -1,12 +1,17 @@
 import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 import { AzureKeyCredential } from "@azure/core-auth";
 
-const token = "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";
+// Use environment variable for API key, fallback to the provided token
+const token = import.meta.env.VITE_GITHUB_TOKEN || "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";
 const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-4.1";
+const model = "gpt-4.1";
 
 export async function correctGrammar(inputText: string): Promise<string> {
   try {
+    if (!token) {
+      throw new Error('API token is not configured. Please check your environment variables.');
+    }
+
     const client = ModelClient(
       endpoint,
       new AzureKeyCredential(token),
@@ -31,12 +36,31 @@ export async function correctGrammar(inputText: string): Promise<string> {
     });
 
     if (isUnexpected(response)) {
-      throw new Error(response.body.error?.message || 'API request failed');
+      console.error("API Error Response:", response.body);
+      
+      // Handle specific error cases
+      if (response.status === 401) {
+        throw new Error('Authentication failed. Please check your API token.');
+      } else if (response.status === 403) {
+        throw new Error('Access forbidden. Your API token may not have the required permissions.');
+      } else if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      } else {
+        throw new Error(response.body.error?.message || `API request failed with status ${response.status}`);
+      }
     }
 
-    return response.body.choices[0]?.message?.content?.trim() || inputText;
+    const correctedText = response.body.choices[0]?.message?.content?.trim();
+    if (!correctedText) {
+      throw new Error('No response received from AI service');
+    }
+
+    return correctedText;
   } catch (error) {
     console.error("Grammar correction error:", error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`Grammar correction failed: ${error.message}`);
+    }
+    throw new Error('Grammar correction failed: Unknown error');
   }
 }
