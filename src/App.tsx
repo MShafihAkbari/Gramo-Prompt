@@ -69,7 +69,7 @@ function App() {
               </p>
             </div>
             <p className="text-slate-500 text-xs">
-              © 2025 GramoPrompt. All rights reserved by Mohammad Shafih Akbari.
+              © 2025 GramoPrompt. All rights reserved by Mohammad Shafi Akbari.
             </p>
           </div>
         </footer>
