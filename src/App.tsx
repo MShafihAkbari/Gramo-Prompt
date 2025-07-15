@@ -65,11 +65,11 @@ function App() {
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <p className="text-slate-300 text-sm font-medium">
-                Powered by Premium AI • End-to-End Encrypted • Real-time Processing
+                Powered by AI • Real-time Processing
               </p>
             </div>
             <p className="text-slate-500 text-xs">
-              © 2025 GramoPrompt. All rights reserved. Premium AI Grammar Assistant.
+              © 2025 GramoPrompt. All rights reserved by Mohammad Shafih Akbari.
             </p>
           </div>
         </footer>
